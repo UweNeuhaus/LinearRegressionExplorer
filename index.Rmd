@@ -1,27 +1,84 @@
 ---
 title       : Linear Regression Explorer
-subtitle    : 
-author      : 
-job         : 
-framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+subtitle    : An Interactive Application to Develop Your Intuition of Linear Regression
+author      : Uwe Neuhaus
+job         : Data Wrangler
+framework   : revealjs      # {io2012, html5slides, shower, dzslides, ...}
+revealjs    : {theme: default, transition: zoom}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : tomorrow      # 
 widgets     : []            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
----
-
-## Slide 2
-
---- .class #id 
-
-## Slide 3
 
 ---
 
-## Slide 4
+<section>
+    <h2 style="color:cyan">Linear Regression Explorer</h2>
+    <h4>An Interactive Application to Develop Your Intuition of Linear Regression</h4>
+    <h5 style="font-size:0.6em; padding-top:4em">Uwe Neuhaus</h5>
+    <h6 style="font-size:0.6em">Data Wrangler</h6>
+</section>
+
+---
+<section>
+    <h2 style="color:cyan">The Aim</h2>
+    <ul>
+      <li class="fragment fade-in">Develop a better intuition for linear regression.</li>
+      <li class="fragment fade-in">Explore the linear relationship between various variables.</li>
+      <li class="fragment fade-in">Try to find the regression line interactively by hand.</li>
+      <li class="fragment fade-in">Compare your own estimates with the true regression line.</li>
+      <li class="fragment fade-in">Implementation as an online application (using Shiny)</li>
+    </ul>
+</section>
 
 ---
 
-## Slide 5
+## Selecting the Variables
 
+- Different variables from the mtcars data set can be selected for the x- and y-axis.
+- The x-axis can be scaled (logarithmic, squared, cubed).  
+  
+```{r simple-plot1, fig.height = 4, fig.width = 12, fig.align = 'center', message = F, echo = F}
+require(ggplot2)
+require(gridExtra)
+plot1<-qplot(qsec, wt, data = mtcars, xlab="1/4 mile time", ylab="weight")
+plot2<-qplot(hp, mpg, data = mtcars, xlab="horsepower", ylab="milex per gallon")
+plot3<-qplot(hp, mpg, data = mtcars, log="x", xlab="log(horsepower)", ylab="miles per gallon")
+grid.arrange(plot1, plot2, plot3, ncol=3)
+```
+
+---
+
+## Try to Manually Fit the Line
+
+- The aim is to fit a regression line manually by interactively choosing the intersect and slope.
+- To evaluate the selected values, the residual standard error is calculated and displayed.
+  
+```{r simple-plot2, fig.height = 5, fig.width = 5, fig.align = 'center', message = F, echo = F}
+require(ggplot2)
+plot2<-qplot(wt, mpg, data = mtcars, xlab="weight", ylab="miles per gallon") +
+  geom_abline(intercept = 30, slope = -3)
+plot2
+```
+Residual Standard Error: 5.4402930
+
+---
+
+## Compare with True Regression Line
+
+- You can compare your own estimate with the true linear regressionn line.
+- The minimal residual standard error and R-sqared can be displayed if desired.
+  
+```{r simple-plot3, fig.height = 5, fig.width = 5, fig.align = 'center', message = F, echo = F}
+require(ggplot2)
+plot3<-qplot(wt, mpg, data = mtcars, xlab="weight", ylab="miles per gallon") +
+  geom_abline(intercept = 30, slope = -3) +
+  geom_smooth(method=lm, se=3)
+plot3
+```
+Residual standard error: 5.4402930
+
+Minimal residual standard error: 3.1340226
+
+R-squared: 0.4594304
